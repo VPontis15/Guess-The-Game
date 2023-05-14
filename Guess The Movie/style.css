@@ -1,0 +1,27 @@
+.container {
+  max-width: min(95%, 1440px);
+  margin-inline: auto;
+}
+
+.word-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.letter {
+  min-width: 2.5rem;
+  background-color: rgb(189, 240, 113);
+  text-align: center;
+  font-size: 2rem;
+}
+
+h1 {
+  text-align: center;
+}
+
+.movie-container {
+  margin-top: 5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
