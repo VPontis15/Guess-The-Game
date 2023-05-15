@@ -21,6 +21,7 @@ class App {
   markup;
   #movie;
   #formattedMovie;
+  #allLetters;
   #wordContainer;
   constructor() {
     this.initApp();
@@ -32,7 +33,7 @@ class App {
     this.generateWords();
     submit.addEventListener("click", this.#revealGuessedLetters.bind(this));
 
-    this.log();
+    // this.log();
   }
 
   generateWordContainers() {
@@ -42,7 +43,7 @@ class App {
     return this.#wordContainer;
   }
 
-  generateWords(l) {
+  generateWords() {
     this.#formattedMovie.forEach((word) => {
       const boxes = this.generateWordContainers();
       for (let letter of word) {
@@ -51,7 +52,8 @@ class App {
           letter === "-" ||
           letter === "_" ||
           letter === ";" ||
-          letter === ","
+          letter === "," ||
+          letter === "."
         )
           return;
         this.markup = this.#generateMarkup(letter);
@@ -74,7 +76,7 @@ class App {
 
   #generateMarkup(letter) {
     return ` <div class="letter">
-    <span>${letter}</span>
+    <span class="hidden">${letter}</span>
   </div>`;
   }
 
