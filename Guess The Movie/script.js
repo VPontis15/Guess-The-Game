@@ -1,15 +1,24 @@
+"user strict";
+
 const container = document.querySelector(".container");
-const submit = document.getElementById("submit");
+
 const guess = document.querySelector(".input--field");
 const movieContainer = document.querySelector(".movie-container");
+const test = movieContainer.children;
+const submit = document.getElementById("submit");
 
+submit.addEventListener("click", () => {});
 class App {
   markup;
-  #movie = "   Harry Potter And The Chamber of Secrets ";
+  #movie = " Harry Potter And the chamber of secrets";
   #formattedMovie = this.#movie.toLowerCase().trim().split(" ");
   #wordContainer;
+  #allLetters;
+
   constructor() {
     this.generateWords(this.#formattedMovie);
+    submit.addEventListener("click", this.#revealGuessedLetters.bind(this));
+    // this.log();
   }
 
   generateWordContainers() {
@@ -19,27 +28,34 @@ class App {
     return this.#wordContainer;
   }
 
-  generateWords(l) {
+  generateWords() {
     this.#formattedMovie.forEach((word) => {
       const boxes = this.generateWordContainers();
-      [boxes].forEach((box) => {
-        for (l of word) {
-          this.markup = this.#generateMarkup(l);
-          box.insertAdjacentHTML("beforeend", this.markup);
-        }
-      });
+      for (let l of word) {
+        this.markup = this.#generateMarkup(l);
+        boxes.insertAdjacentHTML("beforeend", this.markup);
+      }
     });
   }
 
   #generateMarkup(letter) {
     return ` <div class="letter">
-    <span>${letter}</span>
+    <span class="hidden" >${letter}</span>
   </div>`;
   }
 
-  log() {}
+  #revealGuessedLetters(e) {
+    e.preventDefault();
+    this.#allLetters = document.querySelectorAll(".letter");
+
+    for (const [index, value] of this.#allLetters.entries()) {
+      if (guess.value == " ") return;
+      if (value.innerText === guess.value.trim().toLowerCase()) {
+        this.#allLetters[`${index}`].children[0].classList.remove("hidden");
+      }
+    }
+    guess.value = " ";
+  }
 }
 
 const app = new App();
-
-// app.log();
