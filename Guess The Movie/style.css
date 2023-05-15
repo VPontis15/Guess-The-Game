@@ -1,6 +1,7 @@
 .container {
-  max-width: min(95%, 1440px);
+  max-width: min(95%, 1850px);
   margin-inline: auto;
+  background-color: hsl(271, 84%, 83%);
 }
 
 .word-container {
@@ -13,10 +14,13 @@
   background-color: rgb(189, 240, 113);
   text-align: center;
   font-size: 2rem;
+  max-width: 100%;
 }
 
 h1 {
   text-align: center;
+  font-size: 3rem;
+  color: white;
 }
 
 .movie-container {
