@@ -5,7 +5,7 @@ const movieContainer = document.querySelector(".movie-container");
 let page = getRandomNumber(0, 100);
 console.log(page);
 
-const url = `http://www.omdbapi.com/?s=star&type=movie&page=${page}&apikey=5232240c`;
+const url = `http://www.omdbapi.com/?s=break&type=movie&page=${page}&apikey=5232240c`;
 
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
