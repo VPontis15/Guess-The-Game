@@ -2,24 +2,21 @@ const container = document.querySelector(".container");
 const submit = document.getElementById("submit");
 const guess = document.querySelector(".input--field");
 const movieContainer = document.querySelector(".movie-container");
+let page = getRandomNumber(0, 100);
+console.log(page);
 
-const url = "https://moviesdatabase.p.rapidapi.com/titles";
-const options = {
-  method: "GET",
-  headers: {
-    "X-RapidAPI-Key": "7d9954ff2dmsh27aa88166562f13p18cfa1jsnd6653dd96a44",
-    "X-RapidAPI-Host": "moviesdatabase.p.rapidapi.com",
-  },
-};
+const url = `http://www.omdbapi.com/?s=star&type=movie&page=${page}&apikey=5232240c`;
 
-const getRandomNumber = function (min, max) {
+function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
-};
+}
 
-submit.addEventListener("click", () => {});
 class App {
   markup;
   #movie;
+  #movieTitle;
+  #moviePoster;
+  #movieYear;
   #formattedMovie;
   #allLetters;
   #wordContainer;
@@ -28,12 +25,27 @@ class App {
   }
 
   async initApp() {
+    guess.value = " ";
     this.#movie = await this.getMovie();
-    this.#formattedMovie = this.#movie.toLowerCase().trim().split(" ");
+    this.#movieTitle = this.#movie.Title;
+    this.#moviePoster = this.#movie.Poster;
+    this.#movieYear = this.#movie.Year;
+    this.#formattedMovie = this.#movieTitle.toLowerCase().trim().split(" ");
     this.generateWords();
     submit.addEventListener("click", this.#revealGuessedLetters.bind(this));
 
     // this.log();
+  }
+
+  async getMovie() {
+    try {
+      const response = await fetch(url);
+      const result = await response.json();
+      console.log(result.Search[getRandomNumber(0, 9)]);
+      return result.Search[getRandomNumber(0, 9)];
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   generateWordContainers() {
@@ -62,18 +74,6 @@ class App {
     });
   }
 
-  async getMovie() {
-    try {
-      const response = await fetch(url, options);
-      const result = await response.json();
-
-      return result.results[getRandomNumber(0, result.results.length - 1)]
-        .titleText.text;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   #generateMarkup(letter) {
     return ` <div class="letter">
     <span class="hidden">${letter}</span>
@@ -94,7 +94,7 @@ class App {
   }
 
   log() {
-    console.log(this.#movie);
+    console.log(this.#movieTitle);
   }
 }
 
