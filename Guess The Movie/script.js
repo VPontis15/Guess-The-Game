@@ -1,22 +1,24 @@
 const container = document.querySelector(".container");
 const submit = document.getElementById("submit");
-const guess = document.querySelector(".input--field");
+let guess = document.querySelector(".input--field");
 const movieContainer = document.querySelector(".movie-container");
+const array = document.querySelector(".array");
 let page = getRandomNumber(0, 100);
-console.log(page);
-
-const url = `http://www.omdbapi.com/?s=break&type=movie&page=${page}&apikey=5232240c`;
+let scoreText = document.querySelector(".score");
+let score = 20;
+const url = `http://www.omdbapi.com/?s=park&type=movie&page=${page}&apikey=5232240c`;
 
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
 class App {
-  markup;
+  #markup;
   #movie;
   #movieTitle;
   #moviePoster;
   #movieYear;
+  #wrongGuessesArray = [];
   #formattedMovie;
   #allLetters;
   #wordContainer;
@@ -25,13 +27,17 @@ class App {
   }
 
   async initApp() {
-    guess.value = " ";
+    guess.focus();
     this.#movie = await this.getMovie();
     this.#movieTitle = this.#movie.Title;
     this.#moviePoster = this.#movie.Poster;
     this.#movieYear = this.#movie.Year;
     this.#formattedMovie = this.#movieTitle.toLowerCase().trim().split(" ");
     this.generateWords();
+    submit.addEventListener(
+      "click",
+      this.#generateWrongGuessesArray.bind(this)
+    );
     submit.addEventListener("click", this.#revealGuessedLetters.bind(this));
 
     // this.log();
@@ -41,7 +47,6 @@ class App {
     try {
       const response = await fetch(url);
       const result = await response.json();
-      console.log(result.Search[getRandomNumber(0, 9)]);
       return result.Search[getRandomNumber(0, 9)];
     } catch (error) {
       console.error(error);
@@ -65,11 +70,13 @@ class App {
           letter === "_" ||
           letter === ";" ||
           letter === "," ||
-          letter === "."
+          letter === "." ||
+          letter === "'" ||
+          letter === '"'
         )
           return;
-        this.markup = this.#generateMarkup(letter);
-        boxes.insertAdjacentHTML("beforeend", this.markup);
+        this.#markup = this.#generateMarkup(letter);
+        boxes.insertAdjacentHTML("beforeend", this.#markup);
       }
     });
   }
@@ -82,6 +89,7 @@ class App {
 
   #revealGuessedLetters(e) {
     e.preventDefault();
+    guess.focus();
     this.#allLetters = document.querySelectorAll(".letter");
 
     for (const [index, value] of this.#allLetters.entries()) {
@@ -90,14 +98,32 @@ class App {
         this.#allLetters[`${index}`].children[0].classList.remove("hidden");
       }
     }
+
     guess.value = " ";
   }
 
-  log() {
-    console.log(this.#movieTitle);
+  #generateWrongGuessesMarkup(wrongGuess) {
+    const markup = `<div><span class="array-letter">${wrongGuess}</span></div>`;
+    array.insertAdjacentHTML("afterbegin", markup);
+  }
+
+  #generateWrongGuessesArray() {
+    let wrongGuess;
+    if (
+      !this.#movieTitle
+        .trim()
+        .toLowerCase()
+        .includes(guess.value.trim().toLowerCase())
+    )
+      wrongGuess = guess.value.trim().toLowerCase();
+    if (
+      wrongGuess !== undefined &&
+      !this.#wrongGuessesArray.includes(wrongGuess)
+    ) {
+      this.#wrongGuessesArray.push(wrongGuess);
+      this.#generateWrongGuessesMarkup(wrongGuess);
+    }
   }
 }
 
 const app = new App();
-
-// app.log();

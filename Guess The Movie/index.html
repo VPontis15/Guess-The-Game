@@ -16,18 +16,33 @@
     <script defer src="script.js"></script>
   </head>
   <body>
-    <div class="container">
-      <h1>Guess The Movie</h1>
-      <form action="">
-        <input class="input--field" type="text" />
-        <button id="submit" type="submit">Sumbit</button>
-      </form>
-      <div class="movie-container">
-        <!-- <div class="word--container">
+    <main class="container">
+      <div class="col-1">
+        <form action="">
+          <input class="input--field" type="text" />
+          <button id="submit" type="submit">Submit</button>
+        </form>
+      </div>
+      <div class="game-container">
+        <h1>Guess The Movie</h1>
+        <section class="movie-details">
+          <div class="movie-poster"><span>?</span></div>
+          <div class="movie-helper"></div>
+        </section>
+        <section class="movie-container">
+          <!-- <div class="word--container">
          <div class="letter">
           <span>W</span>
         </div></div> -->
+        </section>
       </div>
-    </div>
+      <div class="col-3">
+        <!-- <h3>Score: <span class="score"> 20</span></h3> -->
+        <h2>Wrong Guesses</h2>
+        <div class="array">
+          <!-- <span class="array-letter"></span> -->
+        </div>
+      </div>
+    </main>
   </body>
 </html>
