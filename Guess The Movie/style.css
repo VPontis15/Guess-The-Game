@@ -111,7 +111,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 .word-container {
@@ -129,6 +129,24 @@ h1 {
   animation-duration: 0.75s;
 }
 
+.col-3 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
+  text-align: center;
+}
+
+.col-3 h2 {
+  font-size: 2.5rem;
+  color: #fff;
+}
+
+h3 {
+  font-size: 3rem;
+  color: #fff;
+}
+
 .array {
   margin-inline: auto;
   height: 500px;
@@ -136,7 +154,7 @@ h1 {
   background-color: #fff;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -157,24 +175,6 @@ h1 {
 
 .array-letter {
   font-size: 3rem;
-}
-
-.col-3 {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: end;
-  text-align: center;
-}
-
-.col-3 h2 {
-  font-size: 2.5rem;
-  color: #fff;
-}
-
-h3 {
-  font-size: 3rem;
-  color: #fff;
 }
 
 @keyframes insertIntoArray {

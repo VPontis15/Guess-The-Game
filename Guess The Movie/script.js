@@ -1,15 +1,17 @@
+"use strict";
+
 const container = document.querySelector(".container");
 const submit = document.getElementById("submit");
 let guess = document.querySelector(".input--field");
 const movieContainer = document.querySelector(".movie-container");
 const array = document.querySelector(".array");
-
 let scoreText = document.querySelector(".score");
 let score = 20;
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
-let page = getRandomNumber(0, 100);
+
+let page = getRandomNumber(0, 144);
 
 function checkIfCharacterIsASymbol(letter) {
   if (
@@ -28,15 +30,15 @@ function checkIfCharacterIsASymbol(letter) {
 class App {
   #markup;
   #movie = {
-    url: `http://www.omdbapi.com/?s=park&type=movie&page=${page}&apikey=5232240c`,
+    url: "",
     title: "",
     year: "",
     poster: "",
     formattedMovie: "",
+    page: "",
   };
 
   #wrongGuessesArray = [];
-
   #allLetters;
   #wordContainer;
   constructor() {
@@ -44,33 +46,47 @@ class App {
   }
 
   async initApp() {
-    guess.focus();
-    const movie = await this.getMovie();
-    this.#movie.title = movie.Title;
-    this.#movie.poster = movie.Poster;
-    this.#movie.year = movie.Year;
-    this.#movie.formattedMovie = this.#movie.title
-      .toLowerCase()
-      .trim()
-      .split(" ");
-    this.generateWords();
-    submit.addEventListener(
-      "click",
-      this.#generateWrongGuessesArrayContent.bind(this)
-    );
-    submit.addEventListener("click", this.#revealGuessedLetters.bind(this));
-
+    try {
+      guess.focus();
+      const movie = await this.getMovie();
+      this.#initMovie(movie);
+      this.generateWords();
+      submit.addEventListener(
+        "click",
+        this.#generateWrongGuessesArrayContent.bind(this)
+      );
+      submit.addEventListener("click", this.#revealGuessedLetters.bind(this));
+    } catch (error) {
+      console.error(error);
+    }
     // this.log();
   }
 
   async getMovie() {
     try {
+      this.#movie.url = `http://www.omdbapi.com/?s=evil&type=movie&page=${page}&apikey=5232240c`;
       const response = await fetch(this.#movie.url);
       const result = await response.json();
+      this.#movie.totalResults = result.totalResults;
       return result.Search[getRandomNumber(0, 9)];
     } catch (error) {
       console.error(error);
     }
+  }
+
+  #initMovie(data) {
+    this.#movie.title = data.Title;
+    this.#movie.poster = data.Poster;
+    this.#movie.year = data.Year;
+    this.#movie.formattedMovie = this.#movie.title
+      .toLowerCase()
+      .trim()
+      .split(" ");
+
+    this.#movie.page = getRandomNumber(
+      0,
+      Math.floor(this.#movie.totalResults / 10)
+    );
   }
 
   generateWordContainers() {
@@ -109,7 +125,7 @@ class App {
       }
     }
 
-    guess.value = " ";
+    guess.value = "";
   }
 
   #generateWrongGuessesMarkup(wrongGuess) {
@@ -125,11 +141,12 @@ class App {
         .toLowerCase()
         .includes(guess.value.trim().toLowerCase())
     )
-      wrongGuess = guess.value.trim().toLowerCase();
+      wrongGuess = guess.value.trim().toLowerCase().slice(0);
     if (
       wrongGuess !== undefined &&
       !this.#wrongGuessesArray.includes(wrongGuess) &&
-      !checkIfCharacterIsASymbol(guess.value.trim().toLowerCase())
+      !checkIfCharacterIsASymbol(guess.value.trim().toLowerCase()) &&
+      typeof wrongGuess === "string"
     ) {
       this.#wrongGuessesArray.push(wrongGuess);
       this.#generateWrongGuessesMarkup(wrongGuess);
