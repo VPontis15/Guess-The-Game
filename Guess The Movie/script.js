@@ -3,23 +3,40 @@ const submit = document.getElementById("submit");
 let guess = document.querySelector(".input--field");
 const movieContainer = document.querySelector(".movie-container");
 const array = document.querySelector(".array");
-let page = getRandomNumber(0, 100);
+
 let scoreText = document.querySelector(".score");
 let score = 20;
-const url = `http://www.omdbapi.com/?s=park&type=movie&page=${page}&apikey=5232240c`;
-
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
+}
+let page = getRandomNumber(0, 100);
+
+function checkIfCharacterIsASymbol(letter) {
+  if (
+    letter === ":" ||
+    letter === "-" ||
+    letter === "_" ||
+    letter === ";" ||
+    letter === "," ||
+    letter === "." ||
+    letter === "'" ||
+    letter === '"'
+  )
+    return letter;
 }
 
 class App {
   #markup;
-  #movie;
-  #movieTitle;
-  #moviePoster;
-  #movieYear;
+  #movie = {
+    url: `http://www.omdbapi.com/?s=park&type=movie&page=${page}&apikey=5232240c`,
+    title: "",
+    year: "",
+    poster: "",
+    formattedMovie: "",
+  };
+
   #wrongGuessesArray = [];
-  #formattedMovie;
+
   #allLetters;
   #wordContainer;
   constructor() {
@@ -28,15 +45,18 @@ class App {
 
   async initApp() {
     guess.focus();
-    this.#movie = await this.getMovie();
-    this.#movieTitle = this.#movie.Title;
-    this.#moviePoster = this.#movie.Poster;
-    this.#movieYear = this.#movie.Year;
-    this.#formattedMovie = this.#movieTitle.toLowerCase().trim().split(" ");
+    const movie = await this.getMovie();
+    this.#movie.title = movie.Title;
+    this.#movie.poster = movie.Poster;
+    this.#movie.year = movie.Year;
+    this.#movie.formattedMovie = this.#movie.title
+      .toLowerCase()
+      .trim()
+      .split(" ");
     this.generateWords();
     submit.addEventListener(
       "click",
-      this.#generateWrongGuessesArray.bind(this)
+      this.#generateWrongGuessesArrayContent.bind(this)
     );
     submit.addEventListener("click", this.#revealGuessedLetters.bind(this));
 
@@ -45,7 +65,7 @@ class App {
 
   async getMovie() {
     try {
-      const response = await fetch(url);
+      const response = await fetch(this.#movie.url);
       const result = await response.json();
       return result.Search[getRandomNumber(0, 9)];
     } catch (error) {
@@ -61,20 +81,10 @@ class App {
   }
 
   generateWords() {
-    this.#formattedMovie.forEach((word) => {
+    this.#movie.formattedMovie.forEach((word) => {
       const boxes = this.generateWordContainers();
       for (let letter of word) {
-        if (
-          letter === ":" ||
-          letter === "-" ||
-          letter === "_" ||
-          letter === ";" ||
-          letter === "," ||
-          letter === "." ||
-          letter === "'" ||
-          letter === '"'
-        )
-          return;
+        if (checkIfCharacterIsASymbol(letter)) return;
         this.#markup = this.#generateMarkup(letter);
         boxes.insertAdjacentHTML("beforeend", this.#markup);
       }
@@ -107,10 +117,10 @@ class App {
     array.insertAdjacentHTML("afterbegin", markup);
   }
 
-  #generateWrongGuessesArray() {
+  #generateWrongGuessesArrayContent() {
     let wrongGuess;
     if (
-      !this.#movieTitle
+      !this.#movie.title
         .trim()
         .toLowerCase()
         .includes(guess.value.trim().toLowerCase())
@@ -118,7 +128,8 @@ class App {
       wrongGuess = guess.value.trim().toLowerCase();
     if (
       wrongGuess !== undefined &&
-      !this.#wrongGuessesArray.includes(wrongGuess)
+      !this.#wrongGuessesArray.includes(wrongGuess) &&
+      !checkIfCharacterIsASymbol(guess.value.trim().toLowerCase())
     ) {
       this.#wrongGuessesArray.push(wrongGuess);
       this.#generateWrongGuessesMarkup(wrongGuess);
