@@ -5,6 +5,8 @@ const submit = document.getElementById("submit");
 let guess = document.querySelector(".input--field");
 const movieContainer = document.querySelector(".movie-container");
 const array = document.querySelector(".array");
+const poster = document.querySelector(".movie-poster");
+const posterText = document.querySelector(".movie-poster-text");
 let scoreText = document.querySelector(".score");
 let score = 20;
 function getRandomNumber(min, max) {
@@ -55,6 +57,7 @@ class App {
         "click",
         this.#generateWrongGuessesArrayContent.bind(this)
       );
+      this.revealImage(this.#movie.poster);
       submit.addEventListener("click", this.#revealGuessedLetters.bind(this));
     } catch (error) {
       console.error(error);
@@ -64,7 +67,7 @@ class App {
 
   async getMovie() {
     try {
-      this.#movie.url = `http://www.omdbapi.com/?s=evil&type=movie&page=${page}&apikey=5232240c`;
+      this.#movie.url = `http://www.omdbapi.com/?s=star&type=movie&page=${page}&apikey=5232240c`;
       const response = await fetch(this.#movie.url);
       const result = await response.json();
       this.#movie.totalResults = result.totalResults;
@@ -87,6 +90,17 @@ class App {
       0,
       Math.floor(this.#movie.totalResults / 10)
     );
+  }
+
+  revealImage(data) {
+    console.log(data);
+    if (data === "N/A") {
+      posterText.textContent = "No Image Available";
+      posterText.style.fontSize = "3rem";
+    } else {
+      posterText.style.display = "none";
+      poster.style.background = `url(${data}) no-repeat center center`;
+    }
   }
 
   generateWordContainers() {
