@@ -5,15 +5,17 @@ const submit = document.getElementById("submit");
 let guess = document.querySelector(".input--field");
 const movieContainer = document.querySelector(".movie-container");
 const array = document.querySelector(".array");
-const poster = document.querySelector(".movie-poster");
+const poster = document.querySelector(".movie-poster-image");
 const posterText = document.querySelector(".movie-poster-text");
+const gameName = document.querySelector(".game-name");
+const overlay = document.querySelector(".overlay");
 let scoreText = document.querySelector(".score");
 let score = 20;
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-let page = getRandomNumber(0, 10);
+let page = getRandomNumber(1, 50);
 
 function checkIfCharacterIsASymbol(letter) {
   if (
@@ -23,7 +25,6 @@ function checkIfCharacterIsASymbol(letter) {
     letter === ";" ||
     letter === "," ||
     letter === "." ||
-    letter === "'" ||
     letter === '"'
   )
     return letter;
@@ -61,6 +62,7 @@ class App {
       submit.addEventListener("click", this.#revealGuessedLetters.bind(this));
       console.log(this.#game.poster, this.#game.title, this.#game.year);
     } catch (error) {
+      container.innerHTML = "";
       console.error(error);
     }
     // this.log();
@@ -78,6 +80,7 @@ class App {
           "X-RapidAPI-Host": "rawg-video-games-database.p.rapidapi.com",
         },
       };
+      console.log(page);
       const response = await fetch(this.#game.url, options);
       const result = await response.json();
       this.#game.totalResults = result.count;
@@ -107,8 +110,10 @@ class App {
       posterText.textContent = "No Image Available";
       posterText.style.fontSize = "3rem";
     } else {
-      posterText.style.display = "none";
-      poster.style.background = `url(${data}) no-repeat center center/ cover`;
+      // posterText.style.display = "none";
+      poster.src = this.#game.poster;
+      overlay.style.display = "none";
+      gameName.innerText = this.#game.title;
     }
   }
 
