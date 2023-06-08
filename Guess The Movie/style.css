@@ -97,9 +97,11 @@ body {
 }
 
 .col-1 {
+  padding: 1.25em;
   display: flex;
+  flex-direction: column;
   align-items: end;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 form {
@@ -148,22 +150,38 @@ form button:active {
 }
 
 h1 {
-  text-align: center;
-  font-size: 4rem;
+  font-size: 3rem;
   color: white;
+  background-color: rgb(191, 135, 255);
+  padding: 0.25em;
 }
 
+.movie-poster {
+  background-color: #2b2a2a;
+  display: flex;
+  position: relative;
+  flex-direction: column-reverse;
+}
+
+.movie-details {
+  max-width: 60%;
+  border-radius: 15px;
+  overflow: hidden;
+}
 .movie-poster-image {
-  width: 500px;
+  max-width: 100%;
   height: 500px;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
   background-color: #2b2a2a;
   display: flex;
   justify-content: center;
-  align-items: center;
-  object-fit: cover;
-  object-position: center;
+  align-items: end;
 }
 
 .poster {
@@ -257,6 +275,18 @@ h3 {
 
 .array-letter {
   font-size: 3rem;
+}
+
+.game-name {
+  color: #fff;
+  padding-inline: 0.5em;
+  font-size: 2.5rem;
+  text-align: center;
+  position: absolute;
+  bottom: 0;
+  max-width: 100%;
+  background-color: #2b2a2a86;
+  backdrop-filter: blur(10px);
 }
 
 @keyframes insertIntoArray {
