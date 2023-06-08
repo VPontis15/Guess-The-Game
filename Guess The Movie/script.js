@@ -13,7 +13,7 @@ function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-let page = getRandomNumber(0, 144);
+let page = getRandomNumber(0, 10);
 
 function checkIfCharacterIsASymbol(letter) {
   if (
@@ -31,7 +31,7 @@ function checkIfCharacterIsASymbol(letter) {
 
 class App {
   #markup;
-  #movie = {
+  #game = {
     url: "",
     title: "",
     year: "",
@@ -57,8 +57,9 @@ class App {
         "click",
         this.#generateWrongGuessesArrayContent.bind(this)
       );
-      this.revealImage(this.#movie.poster);
+      this.revealImage(this.#game.poster);
       submit.addEventListener("click", this.#revealGuessedLetters.bind(this));
+      console.log(this.#game.poster, this.#game.title, this.#game.year);
     } catch (error) {
       console.error(error);
     }
@@ -67,39 +68,47 @@ class App {
 
   async getMovie() {
     try {
-      this.#movie.url = `http://www.omdbapi.com/?s=star&type=movie&page=${page}&apikey=5232240c`;
-      const response = await fetch(this.#movie.url);
+      this.#game.url = `https://rawg-video-games-database.p.rapidapi.com/games?key=829b60ddf5b8476987877051d2942836&page=${page}`;
+      const options = {
+        method: "GET",
+
+        headers: {
+          "X-RapidAPI-Key":
+            "7d9954ff2dmsh27aa88166562f13p18cfa1jsnd6653dd96a44",
+          "X-RapidAPI-Host": "rawg-video-games-database.p.rapidapi.com",
+        },
+      };
+      const response = await fetch(this.#game.url, options);
       const result = await response.json();
-      this.#movie.totalResults = result.totalResults;
-      return result.Search[getRandomNumber(0, 9)];
+      this.#game.totalResults = result.count;
+      return result.results[getRandomNumber(0, 19)];
     } catch (error) {
       console.error(error);
     }
   }
 
   #initMovie(data) {
-    this.#movie.title = data.Title;
-    this.#movie.poster = data.Poster;
-    this.#movie.year = data.Year;
-    this.#movie.formattedMovie = this.#movie.title
+    this.#game.title = data.name;
+    this.#game.poster = data.background_image;
+    this.#game.year = data.released.split("-")[0];
+    this.#game.formattedMovie = this.#game.title
       .toLowerCase()
       .trim()
       .split(" ");
 
-    this.#movie.page = getRandomNumber(
+    this.#game.page = getRandomNumber(
       0,
-      Math.floor(this.#movie.totalResults / 10)
+      Math.floor(this.#game.totalResults / 10)
     );
   }
 
   revealImage(data) {
-    console.log(data);
     if (data === "N/A") {
       posterText.textContent = "No Image Available";
       posterText.style.fontSize = "3rem";
     } else {
       posterText.style.display = "none";
-      poster.style.background = `url(${data}) no-repeat center center`;
+      poster.style.background = `url(${data}) no-repeat center center/ cover`;
     }
   }
 
@@ -111,7 +120,7 @@ class App {
   }
 
   generateWords() {
-    this.#movie.formattedMovie.forEach((word) => {
+    this.#game.formattedMovie.forEach((word) => {
       const boxes = this.generateWordContainers();
       for (let letter of word) {
         if (checkIfCharacterIsASymbol(letter)) return;
@@ -150,7 +159,7 @@ class App {
   #generateWrongGuessesArrayContent() {
     let wrongGuess;
     if (
-      !this.#movie.title
+      !this.#game.title
         .trim()
         .toLowerCase()
         .includes(guess.value.trim().toLowerCase())
