@@ -58,11 +58,9 @@ class App {
         "click",
         this.#generateWrongGuessesArrayContent.bind(this)
       );
-      this.revealImage(this.#game.poster);
       submit.addEventListener("click", this.#revealGuessedLetters.bind(this));
       console.log(this.#game.poster, this.#game.title, this.#game.year);
     } catch (error) {
-      container.innerHTML = "";
       console.error(error);
     }
     // this.log();
@@ -150,8 +148,10 @@ class App {
       if (guess.value == " ") return;
       if (value.innerText === guess.value.trim().toLowerCase()) {
         this.#allLetters[`${index}`].children[0].classList.remove("hidden");
+        this.#allLetters[`${index}`].classList.add("checked");
       }
     }
+    this.#checkIfWon(this.#allLetters);
 
     guess.value = "";
   }
@@ -179,6 +179,13 @@ class App {
       this.#wrongGuessesArray.push(wrongGuess);
       this.#generateWrongGuessesMarkup(wrongGuess);
     }
+  }
+
+  #checkIfWon(array) {
+    let check = [...array].every((letter) =>
+      letter.classList.contains("checked")
+    );
+    if (check) this.revealImage(this.#game.poster);
   }
 }
 
