@@ -40,7 +40,7 @@ class App {
     formattedMovie: "",
     page: "",
   };
-
+  #hasWon = false;
   #wrongGuessesArray = [];
   #allLetters;
   #wordContainer;
@@ -182,10 +182,10 @@ class App {
   }
 
   #checkIfWon(array) {
-    let check = [...array].every((letter) =>
-      letter.classList.contains("checked")
-    );
-    if (check) this.revealImage(this.#game.poster);
+    if ([...array].every((letter) => letter.classList.contains("checked"))) {
+      this.revealImage(this.#game.poster);
+      this.#hasWon = true;
+    }
   }
 }
 
