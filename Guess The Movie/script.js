@@ -188,6 +188,11 @@ class App {
       this.revealImage(this.#game.poster);
       this.#hasWon = true;
     }
+
+    if (this.#hasWon) {
+      movieContainer.innerHTML = "You have won!!!";
+      movieContainer.style.fontSize = "3rem";
+    }
   }
 
   #getGenre(data) {
