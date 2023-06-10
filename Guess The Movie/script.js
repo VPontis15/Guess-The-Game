@@ -153,7 +153,7 @@ class App {
         this.#allLetters[`${index}`].classList.add("checked");
       }
     }
-    this.#checkIfWon(this.#allLetters);
+    this.#checkWinCondition(this.#allLetters);
 
     guess.value = "";
   }
@@ -183,13 +183,16 @@ class App {
     }
   }
 
-  #checkIfWon(array) {
+  #checkWinCondition(array) {
     if ([...array].every((letter) => letter.classList.contains("checked"))) {
       this.revealImage(this.#game.poster);
       this.#hasWon = true;
     }
+    this.#checkIfWon(this.#hasWon);
+  }
 
-    if (this.#hasWon) {
+  #checkIfWon(winCondition) {
+    if (winCondition) {
       movieContainer.innerHTML = "You have won!!!";
       movieContainer.style.fontSize = "3rem";
     }
