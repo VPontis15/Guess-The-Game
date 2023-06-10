@@ -9,6 +9,7 @@ const poster = document.querySelector(".movie-poster-image");
 const posterText = document.querySelector(".movie-poster-text");
 const gameName = document.querySelector(".game-name");
 const overlay = document.querySelector(".overlay");
+const helpContainer = document.querySelector(".movie-helper");
 let scoreText = document.querySelector(".score");
 let score = 20;
 function getRandomNumber(min, max) {
@@ -39,6 +40,8 @@ class App {
     poster: "",
     formattedMovie: "",
     page: "",
+    genre: "",
+    helpArray: "",
   };
   #hasWon = false;
   #wrongGuessesArray = [];
@@ -52,6 +55,7 @@ class App {
     try {
       guess.focus();
       const movie = await this.getMovie();
+      console.log(movie);
       this.#initMovie(movie);
       this.generateWords();
       submit.addEventListener(
@@ -59,7 +63,9 @@ class App {
         this.#generateWrongGuessesArrayContent.bind(this)
       );
       submit.addEventListener("click", this.#revealGuessedLetters.bind(this));
-      console.log(this.#game.poster, this.#game.title, this.#game.year);
+      console.log(this.#game.helpArray);
+      this.#addHelp(this.#game.helpArray);
+      this.#addHelp(this.#game.helpArray);
     } catch (error) {
       console.error(error);
     }
@@ -96,11 +102,7 @@ class App {
       .toLowerCase()
       .trim()
       .split(" ");
-
-    this.#game.page = getRandomNumber(
-      0,
-      Math.floor(this.#game.totalResults / 10)
-    );
+    this.#game.helpArray = [this.#getReleaseDate(data), this.#getGenre(data)];
   }
 
   revealImage(data) {
@@ -186,6 +188,24 @@ class App {
       this.revealImage(this.#game.poster);
       this.#hasWon = true;
     }
+  }
+
+  #getGenre(data) {
+    this.#game.genre = data.genres;
+
+    return this.#game.genre[getRandomNumber(0, this.#game.genre.length - 1)]
+      .name;
+  }
+
+  #getReleaseDate() {
+    return this.#game.year;
+  }
+
+  #addHelp(data) {
+    let markup = ` <p class="movie-helper--item"> ${
+      data[getRandomNumber(0, data.length)]
+    } </p>`;
+    helpContainer.insertAdjacentHTML("beforeend", markup);
   }
 }
 
