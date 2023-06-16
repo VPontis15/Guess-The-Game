@@ -11,6 +11,7 @@ const gameName = document.querySelector(".game-name");
 const overlay = document.querySelector(".overlay");
 const helpContainer = document.querySelector(".movie-helper");
 let scoreText = document.querySelector(".score");
+const timer = document.querySelector(".timer");
 let score = 20;
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
@@ -26,7 +27,9 @@ function checkIfCharacterIsASymbol(letter) {
     letter === ";" ||
     letter === "," ||
     letter === "." ||
-    letter === '"'
+    letter === '"' ||
+    letter === "(" ||
+    letter === ")"
   )
     return letter;
 }
@@ -43,6 +46,7 @@ class App {
     genre: "",
     helpArray: "",
   };
+
   #hasWon = false;
   #wrongGuessesArray = [];
   #allLetters;
@@ -54,6 +58,7 @@ class App {
   async initApp() {
     try {
       guess.focus();
+      this.#setTimer(20);
       const movie = await this.getMovie();
       console.log(movie);
       this.#initMovie(movie);
@@ -214,6 +219,25 @@ class App {
       data[getRandomNumber(0, data.length)]
     } </p>`;
     helpContainer.insertAdjacentHTML("beforeend", markup);
+  }
+
+  #setTimer(secs) {
+    let minutes;
+    let seconds;
+
+    let message;
+    timer.textContent = message;
+    const intervalID = setInterval(() => {
+      minutes = Math.floor(secs / 60);
+      seconds = secs % 60;
+      secs = secs - 1;
+      message = `${minutes}:${
+        seconds < 10 ? (seconds = `0${seconds}`) : (seconds = seconds)
+      }`;
+      timer.textContent = message;
+
+      if (this.#hasWon || secs < 0) clearInterval(intervalID);
+    }, 1000);
   }
 }
 
