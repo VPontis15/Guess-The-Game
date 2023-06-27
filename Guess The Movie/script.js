@@ -58,7 +58,7 @@ class App {
   async initApp() {
     try {
       guess.focus();
-      this.#setTimer(20);
+      this.#setTimer(45);
       const movie = await this.getMovie();
       console.log(movie);
       this.#initMovie(movie);
@@ -68,9 +68,6 @@ class App {
         this.#generateWrongGuessesArrayContent.bind(this)
       );
       submit.addEventListener("click", this.#revealGuessedLetters.bind(this));
-      console.log(this.#game.helpArray);
-      this.#addHelp(this.#game.helpArray);
-      this.#addHelp(this.#game.helpArray);
     } catch (error) {
       console.error(error);
     }
@@ -224,19 +221,31 @@ class App {
   #setTimer(secs) {
     let minutes;
     let seconds;
-
     let message;
-    timer.textContent = message;
+    let starterTimer = secs;
+    let count = 0;
+
     const intervalID = setInterval(() => {
       minutes = Math.floor(secs / 60);
       seconds = secs % 60;
       secs = secs - 1;
+
+      if (
+        secs == Math.floor(starterTimer / 2) - 1 &&
+        count < this.#game.helpArray.length
+      ) {
+        this.#addHelp(this.#game.helpArray);
+        count++;
+
+        starterTimer = secs;
+      }
       message = `${minutes}:${
         seconds < 10 ? (seconds = `0${seconds}`) : (seconds = seconds)
       }`;
       timer.textContent = message;
 
       if (this.#hasWon || secs < 0) clearInterval(intervalID);
+      return secs;
     }, 1000);
   }
 }
