@@ -76,7 +76,7 @@ class App {
 
   async getMovie() {
     try {
-      this.#game.url = `https://rawg-video-games-database.p.rapidapi.com/games?key=829b60ddf5b8476987877051d2942836&page=${page}`;
+      this.#game.url = `https://rawg-video-gampi.com/games?key=829b60ddf5b8476987877051d2942836&page=${page}`;
       const options = {
         method: "GET",
 
@@ -93,6 +93,10 @@ class App {
       return result.results[getRandomNumber(0, 19)];
     } catch (error) {
       console.error(error);
+
+      movieContainer.innerText = `There was an error getting the game.Please refresh the page`;
+      movieContainer.style.fontSize = "2rem";
+      movieContainer.style.textAlign = "center";
     }
   }
 
